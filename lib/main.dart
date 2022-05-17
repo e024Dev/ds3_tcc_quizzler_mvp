@@ -11,6 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Quizzler',
+      theme: ThemeData.dark().copyWith(
+        colorScheme: const ColorScheme.dark(
+          secondary: Color(0xFFfff176),
+        ),
+      ),
       home: HomePage(),
     );
   }

@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   QuestionRepository repository = QuestionRepository();
+  List<Icon> responses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +33,12 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: Colors.blue.shade100,
+                color: Theme.of(context).colorScheme.secondary.withAlpha(12),
               ),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   child: Text(
                     '${repository.getQuestionNumber() + 1}',
                     style: const TextStyle(fontSize: 32),
@@ -50,7 +52,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              // height: 400,
               child: StatefulBuilder(
                 builder: (context, setState) {
                   return ListView.builder(
@@ -61,16 +62,20 @@ class _HomePageState extends State<HomePage> {
                             vertical: 8, horizontal: 16),
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.green.shade100,
+                          color: Colors.white.withAlpha(12),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: RadioListTile(
                           title: Text(
-                              repository.getQuestion().anwers[index].answer),
+                            repository.getQuestion().anwers[index].answer,
+                            style: GoogleFonts.lexend(
+                              fontSize: 18,
+                            ),
+                          ),
                           value: index,
                           groupValue: _valueGroup,
                           // toggleable: true,
-                          activeColor: Colors.red.shade700,
+                          activeColor: Theme.of(context).colorScheme.secondary,
                           onChanged: (value) {
                             setState(() {
                               _valueGroup = value as int?;
@@ -93,22 +98,38 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(36))),
+                    primary: Theme.of(context).colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(36),
+                    ),
+                  ),
                   onPressed: () {
                     setState(() {
                       Answer? corretcAnswer = repository.getCorrectAnswer();
                       print('Anwer: $corretcAnswer');
+                      print('Responses: ${responses.length}');
                       if (_selectedAnswer == corretcAnswer) {
                         print('Acertou!');
+                        responses.add(Icon(
+                          Icons.check,
+                          color: Colors.green.shade200,
+                        ));
                       } else {
                         print('Errou!');
+                        responses.add(Icon(
+                          Icons.close,
+                          color: Colors.red.shade200,
+                        ));
                       }
+
                       repository.nextQuestion();
                     });
                   },
                   child: const Text('NEXT QUESTION')),
-            )
+            ),
+            Wrap(
+              children: responses,
+            ),
           ],
         ),
       ),
